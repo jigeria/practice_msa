@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  user_db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: parksangmin
+      POSTGRES_DB: parksangmin
+    volumes:
+      - ./user/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  user_server:
+    image: flask
+    build:
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 5101:5101
+    volumes:
+      - ${PWD}:/usr/src/app
+    links:
+      - user_db:db
+    command: python3 -m flask --app user.user run --port 5101 --host 0.0.0.0
+
+  card_db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: parksangmin
+      POSTGRES_DB: parksangmin
+    volumes:
+      - ./card/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  card_server:
+    image: flask
+    build:
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 5102:5102
+    volumes:
+      - ${PWD}:/usr/src/app
+    links:
+      - card_db:db
+    command: python3 -m flask --app card.card run --port 5102 --host 0.0.0.0
+
+  gateway_server:
+    image: flask
+    build:
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 5100:5100
+    links:
+      - card_server:card_server
+      - user_server:user_server
+    volumes:
+      - ${PWD}:/usr/src/app
+    command: python3 -m flask --app gateway.gateway run --port 5100 --host 0.0.0.0

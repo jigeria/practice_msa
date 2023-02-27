@@ -6,8 +6,6 @@ from requests.sessions import Session, session
 from flask import Flask
 from flask_restx import Api, Resource
 
-from postgresql import CRUD
-
 app = Flask(__name__)
 api = Api(app)
 
@@ -24,8 +22,10 @@ def get_info(url):
 @api.route("/data")
 class GateWay(Resource):
     def get(self):
-        card_url: str = "https://card.jigeria.me/card"
-        user_url: str = "https://user.jigeria.me/user"
+        # card_url: str = "https://card.jigeria.me/card"
+        # user_url: str = "https://user.jigeria.me/user"
+        user_url: str = "http://user_server:5101/user"
+        card_url: str = "http://card_server:5102/card"
 
         user_info = get_info(user_url)
         card_info = get_info(card_url)
@@ -33,9 +33,9 @@ class GateWay(Resource):
         print("card info: ", card_info)
 
         return {
-            "USER_ID": user_info["USER_ID"],
-            "USERNAME": user_info["USERNAME"],
-            "CARD_NUMBER": card_info["CARD_NUMBER"],
+            "USER_ID": user_info["user_id"],
+            "USERNAME": user_info["user_name"],
+            "CARD_NUMBER": card_info["card_number"],
         }
 
 

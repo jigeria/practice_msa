@@ -3,7 +3,6 @@ import json
 from flask import Flask
 from flask_restx import Api, Resource
 
-from postgresql import CRUD
 from db import Databases
 
 app = Flask(__name__)
@@ -15,7 +14,7 @@ TABLE_NAME = "USER_ACOOUNT"
 @api.route("/user")
 class ReadUserDb(Resource):
     def get(self):
-        db = Databases(port=5432)
+        db = Databases(host="db", port=5432)
         
         sql = f"SELECT * from {TABLE_NAME} WHERE user_name='{USER_NAME}';"
         db.cursor.execute(sql)
