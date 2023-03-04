@@ -18,11 +18,11 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: build and release to DockerHub
-    env:
-      REGISTRY: jigeria
-      REPOSITORY: practice_msa
-      IMAGE_TAG: ${{ github.sha }}
-    run: |
-      docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
-      docker push $REGISTRY/$REPOSITORY:latest
-      docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+      env:
+        REGISTRY: jigeria
+        REPOSITORY: practice_msa
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+        docker push $REGISTRY/$REPOSITORY:latest
+        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
